@@ -12,25 +12,21 @@ class MoviesController < ApplicationController
 
   def index
     @all_ratings = Movie.all_ratings
-    
     @movies = Movie.all
     
-    sort = params[:sort]
+    if params[:ratings]
+      @filter_ratings = params[:ratings].keys
+      @movies = Movie.where(rating: @filter_ratings)
+    else
+      @filter_ratings = @all_ratings
+    end
     
-    case sort
-    
-    when 'title'
+    if params[:sort] == 'title'
       @title_header = 'hilite'
       @movies = @movies.order(:title)
-    when 'release_date'
+    elsif params[:sort] == 'release_date'
       @release_date_header = 'hilite'
       @movies = @movies.order(:release_date)
-    end
-    if params[:ratings]
-      @selected_ratings = params[:ratings].keys
-      @movies = Movie.where(rating: @selected_ratings)
-    else
-      @selected_ratings = @all_ratings
     end
     
   end
